@@ -24,6 +24,6 @@ Installation
 
   5. Run `docker compose config` to validate and confirm your configuration
   
-  6. Run `docker compose run --rm paperless-ngx createsuperuser` perform initial database configuration and create the first user
+  6. Run `docker compose run --rm paperless-ngx createsuperuser` to run initial database migrations and create the first user
 
   6. Run `docker compose up -d` to start the containers
