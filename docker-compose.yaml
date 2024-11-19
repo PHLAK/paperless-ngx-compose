@@ -1,0 +1,63 @@
+services:
+
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:${PAPERLESS_VERSION:-latest}
+    env_file: environment.d/paperless.env
+    environment:
+      PAPERLESS_DBHOST: ${DATABASE_HOST:-database}
+      PAPERLESS_DBPORT: ${DB_PORT:-5432}
+      PAPERLESS_DBNAME: ${DATABASE_NAME:-paperless}
+      PAPERLESS_DBUSER: ${DATABASE_USER:-paperless}
+      PAPERLESS_DBPASS: ${DATABASE_PASSWORD}
+      PAPERLESS_REDIS: ${PAPERLESS_REDIS:-redis://redis}
+    ports:
+      - ${PAPERLESS_PORT:-8000}:8000
+    volumes:
+      - ${PAPERLESS_DATA_PATH:-./volumes/paperless/data}:/usr/src/paperless/data
+      - ${PAPERLESS_MEDIA_PATH:-./volumes/paperless/media}:/usr/src/paperless/media
+      - ${PAPERLESS_EXPORT_PATH:-./volumes/paperless/export}:/usr/src/paperless/export
+      - ${PAPERLESS_CONSUME_PATH:-./volumes/paperless/consume}:/usr/src/paperless/consume
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      com.centurylinklabs.watchtower.scope: ${COMPOSE_PROJECT_NAME}
+    depends_on: [database, redis]
+    restart: unless-stopped
+  
+  database:
+    image: postgres:${POSTGRES_VERSION:-latest}
+    env_file: environment.d/database.env
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-paperless}
+      POSTGRES_USER: ${DATABASE_USER:-paperless}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ${DATABASE_VOLUME:-database-data}:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      com.centurylinklabs.watchtower.scope: ${COMPOSE_PROJECT_NAME}
+    restart: unless-stopped
+    
+  redis:
+    image: redis:${REDIS_VERSION:-latest}
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    volumes:
+      - ${REDIS_VOLUME:-redis-data}:/data
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+
+  watchtower:
+    image: containrrr/watchtower:${WATCHTOWER_VERSION:-latest}
+    env_file: environment.d/watchtower.env
+    environment:
+      WATCHTOWER_SCOPE: ${COMPOSE_PROJECT_NAME}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      com.centurylinklabs.watchtower.scope: ${COMPOSE_PROJECT_NAME}
+    restart: unless-stopped
+
+volumes:
+  database-data: {}
+  redis-data: {}
