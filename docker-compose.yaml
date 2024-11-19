@@ -36,6 +36,22 @@ services:
     labels:
       com.centurylinklabs.watchtower.scope: ${COMPOSE_PROJECT_NAME}
     restart: unless-stopped
+
+  database-backups:
+    image: prodrigestivill/postgres-backup-local:${POSTGRES_BACKUP_VERSION:-latest}
+    env_file: environment.d/database-backups.env
+    environment:
+      POSTGRES_HOST: ${DATABASE_HOST:-datbase}
+      POSTGRES_DB: ${DATABASE_NAME:-paperless}
+      POSTGRES_USER: ${DATABASE_USER:-paperless}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_EXTRA_OPTS: '--clean --if-exists'
+      BACKUP_DIR: /backups
+    volumes:
+      - ${DATABASE_BACKUPS_PATH:-./volumes/backups}:/backups
+      - /etc/localtime:/etc/localtime:ro
+    depends_on: [database]
+    restart: unless-stopped
     
   redis:
     image: redis:${REDIS_VERSION:-latest}
