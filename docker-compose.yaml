@@ -1,6 +1,6 @@
 services:
 
-  paperless:
+  paperless-ngx:
     image: ghcr.io/paperless-ngx/paperless-ngx:${PAPERLESS_VERSION:-latest}
     env_file: environment.d/paperless.env
     environment:
