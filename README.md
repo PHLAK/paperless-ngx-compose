@@ -10,7 +10,7 @@ Installation
 
   1. Clone the repository
 
-         git clone git@github.com:PHLAK/paperless-compose.git
+         git clone git@github.com:PHLAK/paperless-ngx-compose.git
 
   2. Initialize the configuration files
 
@@ -26,4 +26,4 @@ Installation
   
   6. Run `docker compose run --rm paperless-ngx createsuperuser` to run initial database migrations and create the first user
 
-  6. Run `docker compose up -d` to start the containers
+  7. Run `docker compose up -d` to start the containers
