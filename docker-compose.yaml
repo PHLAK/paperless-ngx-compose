@@ -5,7 +5,7 @@ services:
     env_file: environment.d/paperless.env
     environment:
       PAPERLESS_DBHOST: ${DATABASE_HOST:-database}
-      PAPERLESS_DBPORT: ${DB_PORT:-5432}
+      PAPERLESS_DBPORT: ${DATABASE_PORT:-5432}
       PAPERLESS_DBNAME: ${DATABASE_NAME:-paperless}
       PAPERLESS_DBUSER: ${DATABASE_USER:-paperless}
       PAPERLESS_DBPASS: ${DATABASE_PASSWORD}
