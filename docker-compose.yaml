@@ -41,7 +41,7 @@ services:
     image: prodrigestivill/postgres-backup-local:${POSTGRES_BACKUP_VERSION:-latest}
     env_file: environment.d/database-backups.env
     environment:
-      POSTGRES_HOST: ${DATABASE_HOST:-datbase}
+      POSTGRES_HOST: ${DATABASE_HOST:-database}
       POSTGRES_DB: ${DATABASE_NAME:-paperless}
       POSTGRES_USER: ${DATABASE_USER:-paperless}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
