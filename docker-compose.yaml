@@ -9,7 +9,7 @@ services:
       PAPERLESS_DBNAME: ${DATABASE_NAME:-paperless}
       PAPERLESS_DBUSER: ${DATABASE_USER:-paperless}
       PAPERLESS_DBPASS: ${DATABASE_PASSWORD}
-      PAPERLESS_REDIS: ${PAPERLESS_REDIS:-redis://redis}
+      PAPERLESS_REDIS: ${PAPERLESS_REDIS:-redis://cache}
     ports:
       - ${PAPERLESS_PORT:-8000}:8000
     volumes:
@@ -20,11 +20,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
     labels:
       com.centurylinklabs.watchtower.scope: ${COMPOSE_PROJECT_NAME}
-    depends_on: [database, redis]
+    depends_on: [database, cache]
     restart: unless-stopped
   
   database:
-    image: postgres:${POSTGRES_VERSION:-latest}
+    image: postgres:${POSTGRES_VERSION:-17}
     env_file: environment.d/database.env
     environment:
       POSTGRES_DB: ${DATABASE_NAME:-paperless}
@@ -38,7 +38,7 @@ services:
     restart: unless-stopped
 
   database-backups:
-    image: prodrigestivill/postgres-backup-local:${POSTGRES_BACKUP_VERSION:-latest}
+    image: prodrigestivill/postgres-backup-local:${POSTGRES_BACKUP_VERSION:-${POSTGRES_VERSION:-17}}
     env_file: environment.d/database-backups.env
     environment:
       POSTGRES_HOST: ${DATABASE_HOST:-database}
@@ -52,13 +52,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
     depends_on: [database]
     restart: unless-stopped
-    
-  redis:
-    image: redis:${REDIS_VERSION:-latest}
-    ports:
-      - ${REDIS_PORT:-6379}:6379
+
+  cache:
+    image: valkey/valkey:${VALKEY_VERSION:-9}
     volumes:
-      - ${REDIS_VOLUME:-redis-data}:/data
+      - ${CACHE_VOLUME:-cache-data}:/data
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
 
@@ -76,4 +74,4 @@ services:
 
 volumes:
   database-data: {}
-  redis-data: {}
+  cache-data: {}
