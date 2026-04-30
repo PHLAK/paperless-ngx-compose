@@ -11,7 +11,7 @@ services:
       PAPERLESS_DBPASS: ${DATABASE_PASSWORD}
       PAPERLESS_REDIS: ${PAPERLESS_REDIS:-redis://cache}
     ports:
-      - ${PAPERLESS_PORT:-8000}:8000
+      - ${PAPERLESS_PORT:-127.0.0.1:8000}:8000
     volumes:
       - ${PAPERLESS_DATA_PATH:-./volumes/paperless/data}:/usr/src/paperless/data
       - ${PAPERLESS_MEDIA_PATH:-./volumes/paperless/media}:/usr/src/paperless/media
